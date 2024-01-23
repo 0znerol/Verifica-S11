@@ -3,8 +3,40 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Nav from "./Nav";
 import FooterPlayer from "./FooterPlayer";
 import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
 export default function Search() {
   const { query } = useParams();
+  const [searchQuery, setSearchQuery] = useState(query);
+  const [results, setResults] = useState([]);
+  console.log(results);
+  useEffect(() => {
+    async function fetchSearch() {
+      try {
+        const response = await fetch(
+          "https://striveschool-api.herokuapp.com/api/deezer/search?q=" + query,
+          {
+            method: "GET",
+            headers,
+          }
+        ); // gets the information
+        if (response.ok) {
+          let result = await response.json(); // transforms the response to json
+          let songInfo = result.data;
+          console.log(result);
+          setResults(songInfo);
+          // let div = document.querySelector(domQuerySelector);
+          // div.innerHTML += albumCard(songInfo[0]); // create a new album tyle
+        } else {
+          console.log(response);
+          console.log("error");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    fetchSearch();
+  }, [query]);
   console.log(query);
   let rockArtists = [
     "queen",
@@ -62,25 +94,6 @@ export default function Search() {
   let handleArtist = async (domQuerySelector) => {
     // artistName = "eminem", "metallica", etc...
     // domQuerySelector = "#rockSection" etc...
-    try {
-      let response = await fetch(
-        "https://striveschool-api.herokuapp.com/api/deezer/search?q=" + query,
-        {
-          method: "GET",
-          headers,
-        }
-      ); // gets the information
-      if (response.ok) {
-        let result = await response.json(); // transforms the response to json
-        let songInfo = result.data;
-        let div = document.querySelector(domQuerySelector);
-        div.innerHTML += albumCard(songInfo[0]); // create a new album tyle
-      } else {
-        console.log("error");
-      }
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   window.onload = async () => {
@@ -126,58 +139,31 @@ export default function Search() {
   return (
     <>
       <div className="row overflow-x-hidden">
-        <div className="col-3 bg-dark overflow-x-hidden">
+        <div className="col bg-dark overflow-x-hidden">
           <Nav />
         </div>
-        <div className="col">
-          <div className="col-12 col-md-9 offset-md-3 mainPage">
-            <div className="row">
-              <div className="col-9 col-lg-11 mainLinks d-none d-md-flex">
-                <a href="#">TRENDING</a>
-                <a href="#">PODCAST</a>
-                <a href="#">MOODS AND GENRES</a>
-                <a href="#">NEW RELEASES</a>
-                <a href="#">DISCOVER</a>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-10">
-                <div id="searchResults" style={{ display: "none" }}>
-                  <h2>Search Results</h2>
-                  <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 imgLinks py-3"></div>
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-10">
-                <div id="rock">
-                  <h2>Rock Classics</h2>
-                  <div
-                    className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 imgLinks py-3"
-                    id="rockSection"
-                  ></div>
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-10">
-                <div id="pop">
-                  <h2>Pop Culture</h2>
-                  <div
-                    className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 imgLinks py-3"
-                    id="popSection"
-                  ></div>
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-10">
-                <div id="hiphop">
-                  <h2>#HipHop</h2>
-                  <div
-                    className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 imgLinks py-3"
-                    id="hipHopSection"
-                  ></div>
+        <div className="col-9">
+          <div className=" mainPage w-100">
+            <div className="row w-100">
+              <div className="col-8 w-100">
+                <h2>Search Results</h2>
+
+                <div id="results" className="d-flex flex-wrap w-100">
+                  {results.map((result) => (
+                    <div
+                      className="card bg-dark text-light text-center py-3 m-2"
+                      id="resultSection"
+                      style={{ width: "10em", height: "15em" }}
+                    >
+                      <img
+                        src={result.album.cover}
+                        className=" align-self-center"
+                        style={{ width: "10em", height: "10em" }}
+                        alt=""
+                      />
+                      <h6 className="">{result.title}</h6>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

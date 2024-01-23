@@ -19,7 +19,7 @@ export default function Nav() {
       >
         <div className="nav-container">
           <a className="navbar-brand" href="index.html">
-            <img src={spotifyLogo} alt="Spotify_Logo" width="131" height="40" />
+            <img src={spotifyLogo} alt="Spotify_Logo" className="w-75" />
           </a>
           {/* <button
           className="navbar-toggler"
@@ -36,7 +36,13 @@ export default function Nav() {
             <div className="navbar-nav">
               <ul className="list-unstyled">
                 <li>
-                  <a className="nav-item nav-link" href="index.html">
+                  <a
+                    className="nav-item nav-link"
+                    href="#"
+                    onClick={() => {
+                      navigate(`/`);
+                    }}
+                  >
                     <i className="fas fa-home fa-lg"></i>&nbsp; Home
                   </a>
                 </li>
