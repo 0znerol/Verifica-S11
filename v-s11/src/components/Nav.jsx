@@ -2,45 +2,15 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import spotifyLogo from "./logo/Spotify_Logo.png";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
 export default function Nav() {
-  let search = async () => {
-    let div = document.querySelector("#searchResults .row");
-    div.innerHTML = "";
-    let searchQuery = ""; //document.querySelector('#searchField').value // gets the value from the search box
-
-    if (searchQuery.length > 2) {
-      //if there's a value in the search box => fetch the information from rapidapi & display the result
-      document.querySelector("#searchResults").style.display = "block";
-
-      try {
-        let response = await fetch(
-          "https://striveschool-api.herokuapp.com/api/deezer/search?q=" +
-            searchQuery,
-          {
-            method: "GET",
-            headers,
-          }
-        ); // gets the information
-
-        if (response.ok) {
-          let result = await response.json(); // transforms the response to json
-          let songs = result.data; // gets the songs info
-
-          for (let x = 0; x < result.data.length; x++) {
-            div.innerHTML += albumCard(result.data[x]);
-          }
-        } else {
-          console.log("error");
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      //else just hide the section!
-      document.querySelector("#searchResults").style.display = "none";
-    }
-  };
-
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+  useEffect(() => {
+    console.log(searchQuery);
+  }, [searchQuery]);
   return (
     <div className="col-3 position-fixed h-100">
       <nav
@@ -77,11 +47,14 @@ export default function Nav() {
                   </a>
                 </li>
                 <li>
-                  <div className="row input-group mt-3 w-100">
-                    <div className="col text-center">
+                  <div className="row input-group mt-3 w-100 p-0">
+                    <div className="col p-0">
                       <input
                         type="text"
-                        className="form-control p-1"
+                        onChange={(e) => {
+                          setSearchQuery(e.target.value);
+                        }}
+                        className="form-control ms-3 rounded-top-left-0"
                         id="searchField"
                         placeholder="Search"
                         aria-label="Search"
@@ -89,14 +62,16 @@ export default function Nav() {
                       />
                     </div>
                     <div
-                      className="input-group-append col p-1 text-center"
+                      className="ms-3 input-group-append col ps-0 h-100"
                       // style="margin-bottom: 4%"
                     >
                       <button
-                        className="btn btn-outline-secondary btn-sm"
+                        className="btn btn-outline-secondary btn-sm p-2"
                         type="button"
                         id="button-addon1"
-                        //   onClick="search()"
+                        onClick={() => {
+                          navigate(`/search/${searchQuery}`);
+                        }}
                       >
                         GO
                       </button>
